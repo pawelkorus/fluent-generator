@@ -20,7 +20,7 @@ interface PersonGenerator extends Generator<Person> {
 ```
 Create generator instance:
 ```
-GeneratorFactory generatorFactory = new GeneratorFactory();
+GeneratorFactory generatorFactory = new JDKProxyGeneratorFactory();
 PersonGenerator generator = generatorFactory.generatorInstance(PersonGenerator.class);
 ```
 Configure generator:
