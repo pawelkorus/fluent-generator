@@ -10,8 +10,22 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
+ * Provides implementation for generator interfaces.
+ * <p>
+ * It is used by {@link GeneratorFactory} when creating instances implementing {@link Generator} interface.
+ * <p>
+ * Every method that has exactly one parameter is considered as setter method. Invoked method name is used to create
+ * setter name for generated object. This setter is then executed when invoking {@link Generator#build()} method.
+ * <p>
+ * Generator interface may also define {@code constructor()} method. This method gets one argument of type {@code
+ * Supplier<T>} which is used in order to provide instance of generated object. This may be used when generating of
+ * other objects than beans which doesn't have no-arg constructor or needs some additional initialization. Generated
+ * instance is created just after executing generator {@link Generator#build()} method and before calling any setter
+ * method.
  *
  * @author pkorus
+ * @see Generator
+ * @see GeneratorFactory
  */
 public class GeneratorProxy implements InvocationHandler {
 
@@ -28,22 +42,21 @@ public class GeneratorProxy implements InvocationHandler {
 	}
 
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) 
-		throws InstantiationException, InvocationTargetException, IllegalAccessException
-	{
+	public Object invoke(Object proxy, Method method, Object[] args)
+		throws InstantiationException, InvocationTargetException, IllegalAccessException {
 		String methodName = method.getName();
 
-		if(methodName.compareTo("build") == 0 
+		if (methodName.compareTo("build") == 0
 			|| methodName.compareTo("get") == 0) {
 
 			return invokeBuild(_targetClass);
 
-		} else if(methodName.compareTo("constructor") == 0) {
+		} else if (methodName.compareTo("constructor") == 0) {
 
 			return invokeContructor(proxy, method, args);
 
-        } else {
-			if(args.length != 1) {
+		} else {
+			if (args.length != 1) {
 				throw new GeneratorException(_currentInterface, "Setter method should have exactly one parameter");
 			}
 
@@ -54,8 +67,8 @@ public class GeneratorProxy implements InvocationHandler {
 
 	private void invokeSetter(String fieldName, Class<?> parameterType, Object value) {
 		String methodName = fieldNameToSetterName(fieldName);
-		
-		if(Supplier.class.isAssignableFrom(parameterType)) {			
+
+		if (Supplier.class.isAssignableFrom(parameterType)) {
 			storeMethodInvocation(methodName, (Supplier) value);
 		} else {
 			storeMethodInvocation(
@@ -65,132 +78,133 @@ public class GeneratorProxy implements InvocationHandler {
 
 	private Object invokeBuild(Class<?> targetClass) {
 		Object o = null;
-		
+
 		try {
 			o = _constructorStrategy.get();
-		} catch(InstantiationException | InvocationTargetException ex) {
+		} catch (InstantiationException | InvocationTargetException ex) {
 			throw new GeneratorException(_currentInterface, "Can't instantiate object of type " + targetClass.toString(), ex);
-		} catch(IllegalAccessException ex) {
+		} catch (IllegalAccessException ex) {
 			StringBuilder b = new StringBuilder();
 			b.append("Can't instantiate object of type ")
-			.append(targetClass.toString())
-			.append(". There is no access to constructor.");
+				.append(targetClass.toString())
+				.append(". There is no access to constructor.");
 			throw new GeneratorException(_currentInterface, b.toString(), ex);
 		}
-		
+
 		String currentMethodName = "";
 		try {
 			for (MethodInvocation mi : _invocations) {
-				currentMethodName = mi.getMethodName();	
+				currentMethodName = mi.getMethodName();
 				mi.invoke(o);
 			}
-		} catch(IllegalAccessException ex) {
-			StringBuilder b = new StringBuilder(); b
-			.append("Can't execute method ").append(currentMethodName)
-			.append(" . Method is inaccessible on instance of class ")
-			.append(targetClass.toString()).append(" .");
+		} catch (IllegalAccessException ex) {
+			StringBuilder b = new StringBuilder();
+			b
+				.append("Can't execute method ").append(currentMethodName)
+				.append(" . Method is inaccessible on instance of class ")
+				.append(targetClass.toString()).append(" .");
 			throw new GeneratorException(_currentInterface, b.toString(), ex);
-		} catch(IllegalArgumentException ex) {
-			StringBuilder b = new StringBuilder(); b
-			.append("Can't execute method ").append(currentMethodName)
-			.append(" . Invalid argument.");
+		} catch (IllegalArgumentException ex) {
+			StringBuilder b = new StringBuilder();
+			b
+				.append("Can't execute method ").append(currentMethodName)
+				.append(" . Invalid argument.");
 			throw new GeneratorException(_currentInterface, b.toString(), ex);
-		} catch(InvocationTargetException ex) {
-			StringBuilder b = new StringBuilder(); b
-			.append("Can't execute method ").append(currentMethodName)
-			.append(" on instance of class ").append(targetClass.toString())
-			.append(" .");
+		} catch (InvocationTargetException ex) {
+			StringBuilder b = new StringBuilder();
+			b
+				.append("Can't execute method ").append(currentMethodName)
+				.append(" on instance of class ").append(targetClass.toString())
+				.append(" .");
 			throw new GeneratorException(_currentInterface, b.toString(), ex);
 		}
-		
+
 		return o;
 	}
 
 	private Object invokeContructor(Object proxy, Method method, Object[] args) {
-		if(args.length != 1) {
-			throw new GeneratorException(_currentInterface, "Constructor method should be called with exactly one parameter of type Supplier<Object>");
-		}		
-		
-		Class<?> argType = args[0].getClass();
-		if(Supplier.class.isAssignableFrom(argType) == false) {
+		if (args.length != 1) {
 			throw new GeneratorException(_currentInterface, "Constructor method should be called with exactly one parameter of type Supplier<Object>");
 		}
-		
+
+		Class<?> argType = args[0].getClass();
+		if (Supplier.class.isAssignableFrom(argType) == false) {
+			throw new GeneratorException(_currentInterface, "Constructor method should be called with exactly one parameter of type Supplier<Object>");
+		}
+
 		Supplier<Object> supplier = (Supplier<Object>) args[0];
-		
+
 		_constructorStrategy = new SupplierConstructorStrategy(supplier);
-		
+
 		return null;
 	}
-	
+
 	private Object negotiateReturnValue(Object proxy, Method method, Object[] args) {
 		Class<?> returnType = method.getReturnType();
 
-		if(returnType == _currentInterface) {
+		if (returnType == _currentInterface) {
 			return proxy;
-		} else if(returnType == Object.class) {
+		} else if (returnType == Object.class) {
 			return proxy;
 		} else {
 			return null;
 		}
 	}
-	
+
 	private void storeMethodInvocation(
-		String methodName, Supplier<?> valueProvider) 
-	{
+		String methodName, Supplier<?> valueProvider) {
 		Method[] methods = _targetClass.getMethods();
 		Class<?> argType = null;
 		Method method = null;
-		
+
 		for (Method temp : methods) {
-			if(temp.getName().compareTo(methodName) == 0
-				&& temp.getParameterCount() == 1) 
-			{
+			if (temp.getName().compareTo(methodName) == 0
+				&& temp.getParameterCount() == 1) {
 				method = temp;
 				argType = temp.getParameterTypes()[0];
 				break;
 			}
 		}
-		
-		if(argType == null || method == null) {
-			StringBuilder b = new StringBuilder(); b
+
+		if (argType == null || method == null) {
+			StringBuilder b = new StringBuilder();
+			b
 				.append("Can't infer argument type because method ")
 				.append(methodName)
 				.append(" that takes only one argument can't be found. ");
 
-				throw new GeneratorException(_currentInterface, b.toString());
+			throw new GeneratorException(_currentInterface, b.toString());
 		}
-		
+
 		_invocations.add(
 			MethodInvocation.build(method, argType, valueProvider));
 	}
-	
+
 	private void storeMethodInvocation(
-		String methodName, Class<?> argType, Supplier<?> valueProvider) 
-	{
+		String methodName, Class<?> argType, Supplier<?> valueProvider) {
 		Method method = methodFromClass(_targetClass, methodName, argType);
 		_invocations.add(
 			MethodInvocation.build(method, argType, valueProvider));
 	}
-	
+
 	private Class<?> inferTargetClass(Class<?> currentInterface) {
 		Class<?> targetClass = Object.class;
-		
+
 		try {
 			Method buildMethod = currentInterface.getMethod("build");
-			if( buildMethod.getReturnType() != Object.class ) {
+			if (buildMethod.getReturnType() != Object.class) {
 				targetClass = buildMethod.getReturnType();
 			}
-		} catch(NoSuchMethodException | SecurityException ex) {
+		} catch (NoSuchMethodException | SecurityException ex) {
 			// if exception was thrown we can't infer return type
 			// from build method because it was not overriden in
 			// generator interface. We lieave Object as a return
 			// type, but it will propably lead to exception
 		}
-		
+
 		return targetClass;
 	}
-	
+
 	private String fieldNameToSetterName(String fieldName) {
 		StringBuilder builder = new StringBuilder();
 		return builder
@@ -199,56 +213,52 @@ public class GeneratorProxy implements InvocationHandler {
 			.append(fieldName.substring(1))
 			.toString();
 	}
-	
+
 	private Method methodFromClass(
-		Class<?> source, String methodName, Class<?> argType) 
-	{
+		Class<?> source, String methodName, Class<?> argType) {
 		Method method = null;
-		
+
 		try {
-			
+
 			method = source.getMethod(methodName, argType);
-		
-		} catch(NoSuchMethodException ex) {
+
+		} catch (NoSuchMethodException ex) {
 			StringBuilder b = new StringBuilder();
-				b.append("Can't find method ")
+			b.append("Can't find method ")
 				.append(methodName)
 				.append(" which takes parameter ")
 				.append(argType.toString());
 
-				throw new GeneratorException(_currentInterface, b.toString(), ex);
+			throw new GeneratorException(_currentInterface, b.toString(), ex);
 		}
-		
+
 		return method;
 	}
-	
-	
+
+
 	private interface ConstructorStrategy {
-		public Object get() throws 
-			InstantiationException, InvocationTargetException, 
+		public Object get() throws
+			InstantiationException, InvocationTargetException,
 			IllegalAccessException;
 	}
-	
-	private class DefaultConstructorStrategy implements ConstructorStrategy
-	{
+
+	private class DefaultConstructorStrategy implements ConstructorStrategy {
 		private final Class<?> _classs;
-		
+
 		DefaultConstructorStrategy(Class<?> classs) {
 			_classs = classs;
 		}
-		
+
 		@Override
-		public Object get() throws 
-			InstantiationException, InvocationTargetException, 
-			IllegalAccessException
-		{
+		public Object get() throws
+			InstantiationException, InvocationTargetException,
+			IllegalAccessException {
 			Object o = _classs.newInstance();
 			return o;
 		}
 	}
-	
-	private class SupplierConstructorStrategy implements ConstructorStrategy
-	{
+
+	private class SupplierConstructorStrategy implements ConstructorStrategy {
 		private final Supplier<Object> _supplier;
 
 		public SupplierConstructorStrategy(Supplier<Object> supplier) {
@@ -256,20 +266,19 @@ public class GeneratorProxy implements InvocationHandler {
 		}
 
 		@Override
-		public Object get() throws 
-			InstantiationException, InvocationTargetException, 
-			IllegalAccessException 
-		{
+		public Object get() throws
+			InstantiationException, InvocationTargetException,
+			IllegalAccessException {
 			Object o = _supplier.get();
-			if(o == null) {
+			if (o == null) {
 				StringBuilder b = new StringBuilder();
 				b.append("Error when instantiating object instance.")
-				.append(" Provided supplier method returned null.");
+					.append(" Provided supplier method returned null.");
 				throw new InstantiationException(b.toString());
 			}
 			return o;
 		}
-		
-		
+
+
 	}
 }
