@@ -30,8 +30,8 @@ import java.util.function.Supplier;
  * Following generator could be defined:
  * <pre><code>
  *     interface PersonGenerator extends Generator<Person>{
- *         void lastName(Supplier<String> v);
- *         void age(Supplier<Integer> v);
+ *         PersonGenerator lastName(Supplier<String> v);
+ *         PersonGenerator age(Supplier<Integer> v);
  *         Person build();
  *     }
  * </code></pre>

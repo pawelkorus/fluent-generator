@@ -15,7 +15,9 @@ import java.util.function.Supplier;
  * It is used by {@link GeneratorFactory} when creating instances implementing {@link Generator} interface.
  * <p>
  * Every method that has exactly one parameter is considered as setter method. Invoked method name is used to create
- * setter name for generated object. This setter is then executed when invoking {@link Generator#build()} method.
+ * setter name for generated object. This setter is then executed when creating object with {@link Generator#build()}.
+ * Declarations of these methods may also specify that generator instance is returned. It is useful for chaining
+ * invocations.
  * <p>
  * Generator interface may also define {@code constructor()} method. This method gets one argument of type {@code
  * Supplier<T>} which is used in order to provide instance of generated object. This may be used when generating of
