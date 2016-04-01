@@ -27,6 +27,8 @@ public class TestGeneratorProxy {
 		void setIntValue(int v);
 		
 		void setSomeValue(String v);
+
+		void setValueX(String v);
 	}
 	
 	public static class ModelImpl implements Model {
@@ -37,6 +39,7 @@ public class TestGeneratorProxy {
 		@Override public void setStringValue(String v) { e.setStringValue(v); }
 		@Override public void setIntValue(int v) { e.setIntValue(v); }
 		@Override public void setSomeValue(String v) { e.setSomeValue(v); }
+		@Override public void setValueX(String v) { e.setValueX(v); }
 	}
 	
 	public interface ModelGenerator extends Generator<ModelImpl> {
@@ -45,6 +48,7 @@ public class TestGeneratorProxy {
 		ModelGenerator stringValue(Supplier<String> v);
 		ModelGenerator intValue(int v);
 		ModelGenerator someValue(Supplier<String> v);
+		void valueX(Supplier<String> v);
 		@Override ModelImpl build();
 	}
 	
@@ -113,6 +117,19 @@ public class TestGeneratorProxy {
 		invokeTimes(invocationsNumber, gen);
 		
 		verify(sup, times(invocationsNumber)).get();
+	}
+
+	@Test
+	public void invoke_generator_method_which_doesnt_return_generator_instance_should_work() {
+		ModelGenerator gen = genFactory.generatorInstance(ModelGenerator.class);
+		Supplier<String> sup = mock(Supplier.class);
+		when(sup.get()).thenReturn(TEST_VALUE_STRING);
+
+		gen.valueX(sup);
+		ModelImpl m = gen.build();
+
+		verify(sup, times(1)).get();
+		verify(m.e).setValueX(eq(TEST_VALUE_STRING));
 	}
 	
 	private void invokeTimes(int times, Generator<?> gen) {
