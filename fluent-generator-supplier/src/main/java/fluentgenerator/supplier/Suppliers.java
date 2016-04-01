@@ -1,6 +1,5 @@
 package fluentgenerator.supplier;
 
-import fluentgenerator.lib.generator.SupplierGenerator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,21 +19,21 @@ public abstract class Suppliers {
 	}
 	
 	public static <T> Supplier<T> oneOf(List<T> items) {
-		return new SupplierGenerator<>(() -> {
+		return () -> {
 			ThreadLocalRandom random = ThreadLocalRandom.current();
 			int randInt = random.nextInt(items.size());
 			return items.get(randInt);
-		});
+		};
 	}	
 	
 	public static <T extends Enum<T>> Supplier<T> oneOf(Class<T> enumType) {
-		T[] values = enumType.getEnumConstants();
+		final T[] values = enumType.getEnumConstants();
 		
-		return new SupplierGenerator(() -> { 
+		return () -> {
 			ThreadLocalRandom random = ThreadLocalRandom.current();
 			int randInt = random.nextInt(values.length);
 			return values[randInt];
-		});
+		};
 	}
 	
 	public static <T> Supplier<List<T>> subsetOf(List<T> items, int min, int max) {
