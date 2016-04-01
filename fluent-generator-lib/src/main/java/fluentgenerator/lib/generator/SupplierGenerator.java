@@ -1,6 +1,7 @@
 package fluentgenerator.lib.generator;
 
 import fluentgenerator.lib.core.Generator;
+
 import java.util.function.Supplier;
 
 /**
@@ -11,7 +12,7 @@ public class SupplierGenerator<T> implements Generator<T> {
 
 	private final Supplier<T> _supplier;
 	
-	public SupplierGenerator(Supplier<T> supplier) {
+	private SupplierGenerator(Supplier<T> supplier) {
 		_supplier = supplier;
 	}
 	
@@ -20,4 +21,17 @@ public class SupplierGenerator<T> implements Generator<T> {
 		return _supplier.get();
 	}
 
+	public static class Builder<T> {
+		private Supplier<T> supplier;
+
+		public static <T> Builder create(Supplier<T> supplier) {
+			Builder<T> b = new Builder<>();
+			b.supplier = supplier;
+			return b;
+		}
+
+		public SupplierGenerator<T> build() {
+			return new SupplierGenerator<>(supplier);
+		}
+	}
 }
