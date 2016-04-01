@@ -4,11 +4,9 @@ import fluentgenerator.lib.core.Generator;
 import static org.mockito.Mockito.*;
 
 import fluentgenerator.lib.core.GeneratorFactory;
-import java.util.List;
 import java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 /**
@@ -45,7 +43,6 @@ public class TestGeneratorProxy {
 		ModelGenerator constructor(Supplier<Object> v);
 		ModelGenerator stringValue(String v);
 		ModelGenerator stringValue(Supplier<String> v);
-		ModelGenerator randomStringValue();
 		ModelGenerator intValue(int v);
 		ModelGenerator someValue(Supplier<String> v);
 		@Override ModelImpl build();
@@ -80,21 +77,6 @@ public class TestGeneratorProxy {
 		verify(ModelImpl.e, times(3)).setStringValue(eq(TEST_VALUE_STRING));
 		verify(ModelImpl.e, times(3)).setIntValue(eq(TEST_VALUE_INT));
 	}
-	
-	/*@Test
-	public void invoke_setter_with_random_value_every_time() {
-		ArgumentCaptor<String> argCaptor = ArgumentCaptor.forClass(String.class);
-		
-		gen.randomStringValue();
-		gen.build();
-		gen.build();
-		
-		verify(ModelImpl.e, times(2)).setStringValue(argCaptor.capture());
-		
-		List<String> values = argCaptor.getAllValues();
-		assert(values.size() == 2);
-		assert(values.get(0).compareTo(values.get(1)) != 0);		
-	}*/
 	
 	@Test
 	public void invoke_setter_with_value_provider() {
