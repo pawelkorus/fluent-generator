@@ -1,12 +1,14 @@
 package fluentgenerator.lib.test.core;
 
 import fluentgenerator.lib.core.Generator;
-import static org.mockito.Mockito.*;
-
 import fluentgenerator.lib.core.GeneratorFactory;
-import java.util.function.Supplier;
+import fluentgenerator.lib.core.JDKProxyGeneratorFactory;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.function.Supplier;
+
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -15,7 +17,7 @@ import org.junit.Test;
  */
 public class TestGeneratorProxy {
 	
-	private GeneratorFactory genFactory = new GeneratorFactory();
+	private GeneratorFactory genFactory = new JDKProxyGeneratorFactory();
 		
 	private ModelGenerator gen;
 	
