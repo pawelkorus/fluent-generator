@@ -198,10 +198,17 @@ public class GeneratorProxy implements InvocationHandler {
 				targetClass = buildMethod.getReturnType();
 			}
 		} catch (NoSuchMethodException | SecurityException ex) {
-			// if exception was thrown we can't infer return type
-			// from build method because it was not overriden in
-			// generator interface. We lieave Object as a return
-			// type, but it will propably lead to exception
+			// there is no possibility to find build method and infer
+			// generated object type.
+			throw buildCantFindBuildMethodException(_currentInterface, ex);
+		}
+
+		// This checks if return type was infered correctly from provided
+		// generator interface. If not then this will lead almost
+		// for sure to other problems later on, it is worth to report
+		// exception.
+		if(targetClass == Object.class) {
+			throw buildCantInferReturnTypeException(_currentInterface);
 		}
 
 		return targetClass;
@@ -280,7 +287,18 @@ public class GeneratorProxy implements InvocationHandler {
 			}
 			return o;
 		}
+	}
 
+	private static GeneratorException buildCantInferReturnTypeException(Class<?> genIface) {
+		StringBuilder b = new StringBuilder();
+		b.append("Can't infer model type created by this generator. Is build method for generator interface declared?");
+		return new GeneratorException(genIface, b.toString());
+	}
 
+	private static GeneratorException buildCantFindBuildMethodException(Class<?> genIface, Exception cause) {
+		StringBuilder b = new StringBuilder();
+		b.append("Can't find build method in provided generator interface. Does provided interface extends ")
+			.append(Generator.class.toString()).append(" interface");
+		return new GeneratorException(genIface, b.toString(), cause);
 	}
 }
