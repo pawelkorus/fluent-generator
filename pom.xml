@@ -12,6 +12,7 @@
     <modules>
         <module>fluent-generator-lib</module>
         <module>fluent-generator-supplier</module>
+        <module>benchmarks</module>
     </modules>
 
 </project>
