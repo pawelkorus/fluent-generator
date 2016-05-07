@@ -2,7 +2,7 @@ package fluentgenerator.lib.test.core;
 
 import fluentgenerator.lib.core.Generator;
 import fluentgenerator.lib.core.GeneratorFactory;
-import fluentgenerator.lib.core.JDKProxyGeneratorFactory;
+import fluentgenerator.lib.core.reflect.ReflectGeneratorProxyFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
  */
 public class TestGeneratorProxy {
 	
-	private GeneratorFactory genFactory = new JDKProxyGeneratorFactory();
+	private GeneratorFactory genFactory = new ReflectGeneratorProxyFactory();
 		
 	private ModelGenerator gen;
 	

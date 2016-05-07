@@ -2,7 +2,7 @@ package fluentgenerator;
 
 import fluentgenerator.lib.core.Generator;
 import fluentgenerator.lib.core.GeneratorFactory;
-import fluentgenerator.lib.core.JDKProxyGeneratorFactory;
+import fluentgenerator.lib.core.reflect.ReflectGeneratorProxyFactory;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,7 +43,7 @@ public class GeneratorProxyBenchmark {
 
             Supplier<String> valueSupplier = () -> { return testValue; };
 
-            GeneratorFactory factory = new JDKProxyGeneratorFactory();
+            GeneratorFactory factory = new ReflectGeneratorProxyFactory();
             jdkProxyGenerator = factory.generatorInstance(ModelGenerator.class);
             jdkProxyGenerator.someValue(randomInt);
         }

@@ -1,17 +1,20 @@
-package fluentgenerator.lib.core;
+package fluentgenerator.lib.core.reflect;
+
+import fluentgenerator.lib.core.Generator;
+import fluentgenerator.lib.core.GeneratorFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 /**
- * Creates generator interface implementations using Java Dynamic Proxies and {@link GeneratorProxy} as a backend
+ * Creates generator interface implementations using Java Dynamic Proxies and {@link ReflectGeneratorProxy} as a backend
  * class.
  *
  * @author pkorus
  * @see Generator
- * @see GeneratorProxy
+ * @see ReflectGeneratorProxy
  */
-public class JDKProxyGeneratorFactory implements GeneratorFactory {
+public class ReflectGeneratorProxyFactory implements GeneratorFactory {
 
 	/**
 	 * Creates generator implementation for a given generator interface
@@ -22,7 +25,7 @@ public class JDKProxyGeneratorFactory implements GeneratorFactory {
 	 */
 	@Override
 	public <T> T generatorInstance(Class<T> generatorClass) {
-		InvocationHandler handler = new GeneratorProxy(generatorClass);
+		InvocationHandler handler = new ReflectGeneratorProxy(generatorClass);
 
 		T obj = (T) Proxy.newProxyInstance(generatorClass.getClassLoader(),
 			new Class<?>[]{generatorClass},

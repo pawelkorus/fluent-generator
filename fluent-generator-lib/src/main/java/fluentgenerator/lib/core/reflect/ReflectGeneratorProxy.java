@@ -1,5 +1,9 @@
-package fluentgenerator.lib.core;
+package fluentgenerator.lib.core.reflect;
 
+import fluentgenerator.lib.core.Generator;
+import fluentgenerator.lib.core.GeneratorException;
+import fluentgenerator.lib.core.GeneratorFactory;
+import fluentgenerator.lib.core.MethodInvocation;
 import fluentgenerator.supplier.StaticValueSupplier;
 
 import java.lang.reflect.InvocationHandler;
@@ -29,14 +33,14 @@ import java.util.function.Supplier;
  * @see Generator
  * @see GeneratorFactory
  */
-public class GeneratorProxy implements InvocationHandler {
+public class ReflectGeneratorProxy implements InvocationHandler {
 
 	private final Collection<MethodInvocation> _invocations;
 	private final Class<?> _currentInterface;
 	private final Class<?> _targetClass;
 	private ConstructorStrategy _constructorStrategy;
 
-	public GeneratorProxy(Class<?> currentInterface) {
+	public ReflectGeneratorProxy(Class<?> currentInterface) {
 		_invocations = new ArrayList<>();
 		_currentInterface = currentInterface;
 		_targetClass = inferTargetClass(currentInterface);

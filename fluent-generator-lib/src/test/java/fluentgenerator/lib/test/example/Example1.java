@@ -2,7 +2,7 @@ package fluentgenerator.lib.test.example;
 
 import fluentgenerator.lib.core.Generator;
 import fluentgenerator.lib.core.GeneratorFactory;
-import fluentgenerator.lib.core.JDKProxyGeneratorFactory;
+import fluentgenerator.lib.core.reflect.ReflectGeneratorProxyFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class Example1 {
 	@Test
 	public void create_person_classes_using_generator() {
 		// create generator factory
-		GeneratorFactory generatorFactory = new JDKProxyGeneratorFactory();
+		GeneratorFactory generatorFactory = new ReflectGeneratorProxyFactory();
 
 		// create instance of generator
 		PersonGenerator generator = generatorFactory.generatorInstance(PersonGenerator.class);

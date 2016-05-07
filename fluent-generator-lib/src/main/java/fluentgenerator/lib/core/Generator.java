@@ -5,6 +5,8 @@
  */
 package fluentgenerator.lib.core;
 
+import fluentgenerator.lib.core.reflect.ReflectGeneratorProxy;
+
 import java.util.function.Supplier;
 
 /**
@@ -38,7 +40,7 @@ import java.util.function.Supplier;
  *
  * @author pkorus
  * @see GeneratorFactory
- * @see GeneratorProxy
+ * @see ReflectGeneratorProxy
  */
 public interface Generator<T> extends Supplier<T> {
 
