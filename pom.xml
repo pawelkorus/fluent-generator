@@ -13,6 +13,8 @@
         <module>fluent-generator-lib</module>
         <module>fluent-generator-supplier</module>
         <module>fluent-generator-json</module>
+        <module>fluent-generator-api</module>
+        <module>fluent-generator-processor</module>
     </modules>
 
 </project>

@@ -1,0 +1,15 @@
+package {{packageName}};
+
+import fluentgenerator.lib.core.Generator;
+
+import java.util.function.Supplier;
+
+public interface {{generatorName}} extends Generator<{{modelName}}> {
+
+    {{#methods}}
+    {{generatorName}} {{methodName}}(Supplier<{{argumentType}}> supplier);
+    {{/methods}}
+
+    {{modelName}} build();
+
+}
