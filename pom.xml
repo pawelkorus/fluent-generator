@@ -12,7 +12,6 @@
     <modules>
         <module>fluent-generator-lib</module>
         <module>fluent-generator-supplier</module>
-        <module>benchmarks</module>
         <module>fluent-generator-json</module>
     </modules>
 
