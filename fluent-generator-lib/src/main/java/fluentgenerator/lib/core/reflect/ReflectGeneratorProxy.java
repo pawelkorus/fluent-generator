@@ -207,7 +207,7 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 			throw buildCantFindBuildMethodException(_currentInterface, ex);
 		}
 
-		// This checks if return type was infered correctly from provided
+		// This checks if return type was inferred correctly from provided
 		// generator interface. If not then this will lead almost
 		// for sure to other problems later on, it is worth to report
 		// exception.
