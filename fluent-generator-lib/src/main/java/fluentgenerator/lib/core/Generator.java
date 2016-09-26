@@ -46,6 +46,10 @@ public interface Generator<T> extends Supplier<T> {
 
 	T build();
 
+	default <E> E build(Class<E> target) {
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	default T get() {
 		return this.build();

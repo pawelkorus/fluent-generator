@@ -52,8 +52,17 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 		if (methodName.compareTo("build") == 0
 			|| methodName.compareTo("get") == 0) {
 
-			Class<?> targetType = inferTargetClass(currentInterface);
-			return invokeBuild(targetType);
+			if(args == null || args.length == 0) {
+				Class<?> targetType = inferTargetClass(currentInterface);
+				return invokeBuild(targetType);
+			}
+
+			if(args[0] instanceof Class) {
+				Class targetType = (Class) args[0];
+				return invokeBuild(targetType);
+			}
+
+			throw buildCantHandleBuildRequest(currentInterface, methodName, args);
 
 		} else if (methodName.compareTo("constructor") == 0) {
 
@@ -205,5 +214,13 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 		b.append("Can't find build method in provided generator interface. Does provided interface extends ")
 			.append(Generator.class.toString()).append(" interface");
 		return new GeneratorException(genIface, b.toString(), cause);
+	}
+
+	private static GeneratorException buildCantHandleBuildRequest(Class<?> genIface,
+																  String buildMethodName, Object[] args) {
+		StringBuilder b = new StringBuilder();
+		b.append("Can't handle build request. Unsupported call to ").append(buildMethodName).append(" with arguments ")
+			.append("[").append(args).append("]");
+		return new GeneratorException(genIface, "Can't handle build request. Unsupported call");
 	}
 }
