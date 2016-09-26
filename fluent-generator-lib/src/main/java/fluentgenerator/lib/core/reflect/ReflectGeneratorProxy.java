@@ -39,9 +39,14 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 	private final Class<?> currentInterface;
 	private final Map<Property, Supplier<Object>> propertySuppliers = new HashMap<>();
 	private Optional<ConstructorStrategy> constructorStrategy = Optional.empty();
+	private Map<Class<?>, Supplier<GenerationVisitor>> targetTypeToVisitor = new HashMap<>();
 
 	public ReflectGeneratorProxy(Class<?> currentInterface) {
 		this.currentInterface = currentInterface;
+
+		if(isPresent("com.fasterxml.jackson.databind.JsonNode")) {
+			targetTypeToVisitor.put(JsonNode.class, JsonNodeObjectGenerationVisitor::new);
+		}
 	}
 
 	@Override
@@ -89,9 +94,12 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 	private Object invokeBuild(Class<?> targetType) {
 		GenerationVisitor visitor = null;
 
-		if(JsonNode.class.isAssignableFrom(targetType)) {
-			visitor = new JsonNodeObjectGenerationVisitor();
-		} else {
+		for(Class<?> mappingKey : targetTypeToVisitor.keySet()) {
+			if(mappingKey.isAssignableFrom(targetType)) {
+				visitor = targetTypeToVisitor.get(mappingKey).get();
+			}
+		}
+		if(visitor == null) {
 			visitor = new ObjectGenerationVisitor(targetType, currentInterface);
 		}
 
@@ -222,5 +230,15 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 		b.append("Can't handle build request. Unsupported call to ").append(buildMethodName).append(" with arguments ")
 			.append("[").append(args).append("]");
 		return new GeneratorException(genIface, "Can't handle build request. Unsupported call");
+	}
+
+	public static boolean isPresent(String className) {
+		try {
+			Class.forName(className);
+			return true;
+		} catch (Throwable ex) {
+			// Class or one of its dependencies is not present...
+			return false;
+		}
 	}
 }
