@@ -65,14 +65,13 @@ public class TestGeneratorProxy {
 		gen.stringValue(TEST_VALUE_STRING);
 		gen.intValue(TEST_VALUE_INT);
 		gen.build();
-		
+
 		verify(ModelImpl.e).setStringValue(eq(TEST_VALUE_STRING));
 		verify(ModelImpl.e).setIntValue(eq(TEST_VALUE_INT));
 	}
 	
 	@Test
 	public void build_many_object_with_static_values() {
-		ModelGenerator gen = genFactory.generatorInstance(ModelGenerator.class);
 		gen.stringValue(TEST_VALUE_STRING);
 		gen.intValue(TEST_VALUE_INT);
 		
@@ -88,6 +87,7 @@ public class TestGeneratorProxy {
 	public void invoke_setter_with_value_provider() {
 		int invocationsNumber = 2;
 		Supplier<String> valueProviderMock = mock(Supplier.class);
+		when(valueProviderMock.get()).thenReturn(TEST_VALUE_STRING);
 		
 		gen.stringValue(valueProviderMock);
 		invokeTimes(invocationsNumber, gen);
@@ -111,7 +111,6 @@ public class TestGeneratorProxy {
 	@Test
 	public void invoke_setter_with_value_provider_no_const_setter_defined() {
 		int invocationsNumber = 2;
-		ModelGenerator gen = genFactory.generatorInstance(ModelGenerator.class);
 		Supplier<String> sup = mock(Supplier.class);
 		when(sup.get()).thenReturn(TEST_VALUE_STRING);
 		
@@ -123,7 +122,6 @@ public class TestGeneratorProxy {
 
 	@Test
 	public void invoke_generator_method_which_doesnt_return_generator_instance_should_work() {
-		ModelGenerator gen = genFactory.generatorInstance(ModelGenerator.class);
 		Supplier<String> sup = mock(Supplier.class);
 		when(sup.get()).thenReturn(TEST_VALUE_STRING);
 

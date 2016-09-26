@@ -1,9 +1,9 @@
-package fluentgenerator.json.test;
+package fluentgenerator.lib.test.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fluentgenerator.json.JacksonGenerator;
-import fluentgenerator.json.JacksonGeneratorProxyFactory;
+import fluentgenerator.lib.core.Generator;
 import fluentgenerator.lib.core.GeneratorFactory;
+import fluentgenerator.lib.core.reflect.ReflectGeneratorProxyFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestJacksonGeneratorProxy {
 
-	private GeneratorFactory genFactory = new JacksonGeneratorProxyFactory();
+	private GeneratorFactory genFactory = new ReflectGeneratorProxyFactory();
 
 	private ModelGenerator gen;
 
-	private static interface ModelGenerator extends JacksonGenerator {
+	private static interface ModelGenerator extends Generator<JsonNode> {
 		ModelGenerator stringField(String v);
 		ModelGenerator intField(Integer v);
 		ModelGenerator longField(Long v);
@@ -27,6 +27,8 @@ public class TestJacksonGeneratorProxy {
 
 		ModelGenerator stringSupplier(Supplier<String> sup);
 		ModelGenerator jsonNodeSupplier(Supplier<JsonNode> sup);
+
+		JsonNode build();
 	}
 
 	private static class CustomTestClass {
