@@ -1,9 +1,9 @@
 package fluentgenerator.lib.core.reflect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fluentgenerator.lib.core.Generator;
+import fluentgenerator.core.Generator;
+import fluentgenerator.core.GeneratorFactory;
 import fluentgenerator.lib.core.GeneratorException;
-import fluentgenerator.lib.core.GeneratorFactory;
 import fluentgenerator.supplier.StaticValueSupplier;
 
 import java.lang.reflect.InvocationHandler;
@@ -30,7 +30,6 @@ import java.util.function.Supplier;
  * instance is created just after executing generator {@link Generator#build()} method and before calling any setter
  * method.
  *
- * @author pkorus
  * @see Generator
  * @see GeneratorFactory
  */

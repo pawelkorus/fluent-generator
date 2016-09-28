@@ -1,7 +1,7 @@
 package fluentgenerator.lib.core.reflect;
 
-import fluentgenerator.lib.core.Generator;
-import fluentgenerator.lib.core.GeneratorFactory;
+import fluentgenerator.core.Generator;
+import fluentgenerator.core.GeneratorFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -10,7 +10,6 @@ import java.lang.reflect.Proxy;
  * Creates generator interface implementations using Java Dynamic Proxies and {@link ReflectGeneratorProxy} as a backend
  * class.
  *
- * @author pkorus
  * @see Generator
  * @see ReflectGeneratorProxy
  */

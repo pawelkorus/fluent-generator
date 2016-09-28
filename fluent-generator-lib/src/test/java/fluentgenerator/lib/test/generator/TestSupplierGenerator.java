@@ -1,6 +1,6 @@
 package fluentgenerator.lib.test.generator;
 
-import fluentgenerator.lib.core.Generator;
+import fluentgenerator.core.Generator;
 import fluentgenerator.lib.generator.SupplierGenerator;
 import org.junit.Test;
 

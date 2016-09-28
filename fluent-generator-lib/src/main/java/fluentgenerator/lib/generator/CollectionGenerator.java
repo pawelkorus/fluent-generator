@@ -1,6 +1,6 @@
 package fluentgenerator.lib.generator;
 
-import fluentgenerator.lib.core.Generator;
+import fluentgenerator.core.Generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- *
- * @author pkorus
  * @param <T> type of generated instances
  */
 public class CollectionGenerator<T> implements Generator<Collection<T>> {

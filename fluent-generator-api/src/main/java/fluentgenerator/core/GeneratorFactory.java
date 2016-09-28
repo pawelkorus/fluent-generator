@@ -1,4 +1,4 @@
-package fluentgenerator.lib.core;
+package fluentgenerator.core;
 
 public interface GeneratorFactory {
 

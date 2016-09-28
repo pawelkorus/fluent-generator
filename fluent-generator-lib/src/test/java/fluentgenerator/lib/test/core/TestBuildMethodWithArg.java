@@ -1,8 +1,8 @@
 package fluentgenerator.lib.test.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fluentgenerator.lib.core.Generator;
-import fluentgenerator.lib.core.GeneratorFactory;
+import fluentgenerator.core.Generator;
+import fluentgenerator.core.GeneratorFactory;
 import fluentgenerator.lib.core.reflect.ReflectGeneratorProxyFactory;
 import org.junit.Before;
 import org.junit.Test;

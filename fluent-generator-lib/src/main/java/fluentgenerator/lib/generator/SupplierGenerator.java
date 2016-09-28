@@ -1,6 +1,6 @@
 package fluentgenerator.lib.generator;
 
-import fluentgenerator.lib.core.Generator;
+import fluentgenerator.core.Generator;
 
 import java.util.function.Supplier;
 

@@ -10,6 +10,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>fluent-generator</groupId>
+			<artifactId>fluent-generator-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.7.4</version>
