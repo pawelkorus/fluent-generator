@@ -6,9 +6,12 @@ import fluentgenerator.core.GeneratorFactory;
 import fluentgenerator.lib.core.GeneratorException;
 import fluentgenerator.supplier.StaticValueSupplier;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +75,10 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 
 			return invokeContructor(proxy, method, args);
 
+		} else if (method.isDefault()) {
+
+			return invokeDefaultMethod(proxy, method, args);
+
 		} else {
 			if (args == null || args.length != 1) {
 				throw new GeneratorException(currentInterface, "Setter method should have exactly one parameter");
@@ -79,6 +86,23 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 
 			invokeSetter(methodName, method.getParameterTypes()[0], args[0]);
 			return negotiateReturnValue(proxy, method, args);
+		}
+	}
+
+	private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) {
+		try {
+			Constructor<MethodHandles.Lookup> LOOKUP_CONSTRUCTOR =
+				MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+			if (!LOOKUP_CONSTRUCTOR.isAccessible()) {
+				LOOKUP_CONSTRUCTOR.setAccessible(true);
+			}
+
+			return LOOKUP_CONSTRUCTOR.newInstance(method.getDeclaringClass(), MethodHandles.Lookup.PRIVATE)
+				.unreflectSpecial(method, method.getDeclaringClass())
+				.bindTo(proxy)
+				.invokeWithArguments(args);
+		} catch (Throwable throwable) {
+			throw buildCantExecuteDefaultMethod(currentInterface, method.getName(), args, throwable);
 		}
 	}
 
@@ -229,6 +253,14 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 		b.append("Can't handle build request. Unsupported call to ").append(buildMethodName).append(" with arguments ")
 			.append("[").append(args).append("]");
 		return new GeneratorException(genIface, "Can't handle build request. Unsupported call");
+	}
+
+	private static GeneratorException buildCantExecuteDefaultMethod(Class<?> genIface,
+																	String methodName, Object[] args, Throwable cause) {
+		StringBuilder b = new StringBuilder();
+		b.append("Can't execute default method ").append(methodName).append(" with arguments ")
+			.append(args == null? "no arguments" : Arrays.toString(args));
+		return new GeneratorException(genIface, b.toString(), cause);
 	}
 
 	public static boolean isPresent(String className) {

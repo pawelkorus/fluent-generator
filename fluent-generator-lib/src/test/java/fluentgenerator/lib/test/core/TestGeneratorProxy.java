@@ -47,6 +47,14 @@ public class TestGeneratorProxy {
 		ModelGenerator someValue(Supplier<String> v);
 		void valueX(Supplier<String> v);
 		@Override ModelImpl build();
+
+		default int defaultMethod() {
+			return 5;
+		}
+
+		default ModelImpl defaultForwardMethod() {
+			return build();
+		}
 	}
 	
 	@Before
@@ -122,6 +130,23 @@ public class TestGeneratorProxy {
 
 		gen.valueX(sup);
 		ModelImpl m = gen.build();
+
+		verify(sup, times(1)).get();
+		verify(m.e).setValueX(eq(TEST_VALUE_STRING));
+	}
+
+	@Test
+	public void invoke_default_method() {
+		assert gen.defaultMethod() == 5;
+	}
+
+	@Test
+	public void invoke_default_method_that_calls_build_method() {
+		Supplier<String> sup = mock(Supplier.class);
+		when(sup.get()).thenReturn(TEST_VALUE_STRING);
+
+		gen.valueX(sup);
+		ModelImpl m = gen.defaultForwardMethod();
 
 		verify(sup, times(1)).get();
 		verify(m.e).setValueX(eq(TEST_VALUE_STRING));
