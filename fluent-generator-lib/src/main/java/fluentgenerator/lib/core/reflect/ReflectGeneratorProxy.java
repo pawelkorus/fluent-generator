@@ -73,7 +73,7 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 			return invokeContructor(proxy, method, args);
 
 		} else {
-			if (args.length != 1) {
+			if (args == null || args.length != 1) {
 				throw new GeneratorException(currentInterface, "Setter method should have exactly one parameter");
 			}
 
@@ -112,7 +112,7 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 	}
 
 	private Object invokeContructor(Object proxy, Method method, Object[] args) {
-		if (args.length != 1) {
+		if (args == null || args.length != 1) {
 			throw new GeneratorException(currentInterface, "Constructor method should be called with exactly one parameter of type Supplier<Object>");
 		}
 
