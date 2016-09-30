@@ -251,7 +251,7 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 																  String buildMethodName, Object[] args) {
 		StringBuilder b = new StringBuilder();
 		b.append("Can't handle build request. Unsupported call to ").append(buildMethodName).append(" with arguments ")
-			.append("[").append(args).append("]");
+			.append(Optional.ofNullable(args).map(Arrays::toString).orElse("no arguments"));
 		return new GeneratorException(genIface, "Can't handle build request. Unsupported call");
 	}
 
@@ -259,7 +259,7 @@ public class ReflectGeneratorProxy implements InvocationHandler {
 																	String methodName, Object[] args, Throwable cause) {
 		StringBuilder b = new StringBuilder();
 		b.append("Can't execute default method ").append(methodName).append(" with arguments ")
-			.append(args == null? "no arguments" : Arrays.toString(args));
+			.append(Optional.ofNullable(args).map(Arrays::toString).orElse("no arguments"));
 		return new GeneratorException(genIface, b.toString(), cause);
 	}
 
