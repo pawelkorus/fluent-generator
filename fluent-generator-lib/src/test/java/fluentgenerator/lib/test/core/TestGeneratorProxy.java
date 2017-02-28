@@ -151,7 +151,38 @@ public class TestGeneratorProxy {
 		verify(sup, times(1)).get();
 		verify(m.e).setValueX(eq(TEST_VALUE_STRING));
 	}
-	
+
+	@Test
+	public void modify_property_static_value_then_static_value() {
+		String sampleValue1 = "value1";
+		String sampleValue2 = "value2";
+		Supplier<String> sup = mock(Supplier.class);
+		when(sup.get()).thenReturn(sampleValue2);
+
+		gen.stringValue(sampleValue1);
+		ModelImpl m1 = gen.build();
+		gen.stringValue(sup);
+		ModelImpl m2 = gen.build();
+
+		verify(m1.e).setStringValue(eq(sampleValue1));
+		verify(sup).get();
+		verify(m2.e).setStringValue(eq(sampleValue2));
+	}
+
+	@Test
+	public void modify_property_static_value_then_supplier() {
+		String sampleValue1 = "value1";
+		String sampleValue2 = "value2";
+
+		gen.stringValue(sampleValue1);
+		ModelImpl m1 = gen.build();
+		gen.stringValue(sampleValue2);
+		ModelImpl m2 = gen.build();
+
+		verify(m1.e).setStringValue(eq(sampleValue1));
+		verify(m2.e).setStringValue(eq(sampleValue2));
+	}
+
 	private void invokeTimes(int times, Generator<?> gen) {
 		for(int i = times - 1; i >= 0; i--) {
 			gen.build();

@@ -1,5 +1,7 @@
 package fluentgenerator.lib.core.reflect;
 
+import java.util.Objects;
+
 public class Property {
 	private final String name;
 	private final Class<?> type;
@@ -19,12 +21,18 @@ public class Property {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return name.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return super.equals(obj);
+		if(obj == this) return true;
+
+		if(obj == null || !(obj instanceof Property)) return false;
+
+		Property right = (Property) obj;
+
+		return Objects.equals(name, right.name);
 	}
 
 	@Override
