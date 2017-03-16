@@ -31,7 +31,7 @@ class Shape {
 For classes like `Shape` fluent generator may be defined in following way:
 ```
 interface ShapeGenerator extends Generator<Shape> {
-  ShapeGenerator name(Supplier<String> v);
+  ShapeGenerator id(Supplier<String> v);
   ShapeGenerator type(Supplier<String> v);
   ShapeGenerator size(Supplier<Integer>);
   ShapeGenerator size(int age);
@@ -50,7 +50,7 @@ generator.id(() -> return "shape1").type(() -> return "Rect").size(5);
 ```
 Eventually, call to method `build` will produce new instance of `Shape` class with fields filled in: 
 ```
-Person johnPoultney = generator.build();
+Shape rect1 = generator.build();
 ```
 ## Build-in suppliers
 ## Using annotation processor
