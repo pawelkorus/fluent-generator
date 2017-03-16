@@ -8,7 +8,7 @@ Then if you use maven you can add following to your pom.xml file
 ```
 <dependency>
     <groupId>com.github.pawelkorus</groupId>
-    <artifactId>fluent-generator</artifactId>
+    <artifactId>fluent-generator-lib</artifactId>
     <version>master-SNAPSHOT</version>
 </dependency>
 ```
@@ -51,6 +51,23 @@ generator.id(() -> return "shape1").type(() -> return "Rect").size(5);
 Eventually, call to method `build` will produce new instance of `Shape` class with fields filled in: 
 ```
 Shape rect1 = generator.build();
+```
+Next we may imagine that we need 100 instances of `Shape` class and all of those instance should have following
+properties: id set to random UUID, type set to one of two values "Rect" and "Square" and size choosen randomly.
+To meet this requirements `ShapeGenerator` instance needs to be configured as follows:
+```
+generator
+    .id(() -> return UUID.randomUUID())
+    .type(oneOf(Arrays.asList("Rect", "Square")))
+    .size(randomInt(4, 10));
+```
+In this configuration methods `oneOf` and `randomInt` come from `fluent-generator-supplier` module. For more
+details see [Built-in suppliers](#built-in-suppliers).
+
+Because of the fact that `ShapeGenerator` class extends indirectly `Supplier` interface it nicely works 
+with Java 8 streams:
+```
+Steam.generate(generator).limit(100).collect(Collectors.toList())
 ```
 ## Built-in suppliers
 ## Using annotation processor
