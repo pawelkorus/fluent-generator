@@ -52,7 +52,7 @@ Eventually, call to method `build` will produce new instance of `Shape` class wi
 ```
 Shape rect1 = generator.build();
 ```
-## Build-in suppliers
+## Built-in suppliers
 ## Using annotation processor
 ## Sample repository
 For sample repository see [fluent-generator-sample](https://github.com/pawelkorus/fluent-generator-sample)
