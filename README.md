@@ -64,12 +64,14 @@ generator
 In this configuration methods `oneOf` and `randomInt` come from `fluent-generator-supplier` module. For more
 details see [Built-in suppliers](#built-in-suppliers).
 
-Because of the fact that `ShapeGenerator` class extends indirectly `Supplier` interface it nicely works 
+Because of the fact that `ShapeGenerator` class implementes indirectly `Supplier` interface it nicely works 
 with Java 8 streams:
 ```
 Steam.generate(generator).limit(100).collect(Collectors.toList())
 ```
 ## Built-in suppliers
 ## Using annotation processor
+Annotation processor may be used in order to automatically generate source code for fluent generator
+interfaces. Use `fluent-generator-processor` module to enable annotation processing.
 ## Sample repository
 For sample repository see [fluent-generator-sample](https://github.com/pawelkorus/fluent-generator-sample)
