@@ -61,13 +61,13 @@ generator
     .type(oneOf(Arrays.asList("Rect", "Square")))
     .size(randomInt(4, 10));
 ```
-In this configuration methods `oneOf` and `randomInt` come from `fluent-generator-supplier` module. For more
+In this configuration `oneOf` and `randomInt` methods come from `fluent-generator-supplier` module. For more
 details see [Built-in suppliers](#built-in-suppliers).
 
 Because of the fact that `ShapeGenerator` class implementes indirectly `Supplier` interface it nicely works 
 with Java 8 streams:
 ```
-Steam.generate(generator).limit(100).collect(Collectors.toList())
+Stream.generate(generator).limit(100).collect(Collectors.toList())
 ```
 ## Built-in suppliers
 ## Using annotation processor
